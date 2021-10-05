@@ -44,5 +44,5 @@ If you want to try it on your local machine, you just need to run some simple co
 
 ## License
 
-SocketChess is released under the MIT License.
+PhaserCards is released under the MIT License.
 
