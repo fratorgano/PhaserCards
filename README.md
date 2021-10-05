@@ -35,12 +35,11 @@ If you want to try it on your local machine, you just need to run some simple co
 * [Socket.io](https://socket.io/) - Low latency sockets
 * [Express](https://github.com/expressjs/express) - Web Framework
 
-
-
 ### Client-side
 * [Phaser](https://phaser.io/) - HTML5 Game Framework
 
-
+## Assets
+* [Pixel Fantasy Playing Cards](https://cazwolf.itch.io/pixel-fantasy-cards) - Card set
 
 ## License
 
