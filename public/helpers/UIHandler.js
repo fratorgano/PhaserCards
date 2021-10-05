@@ -59,7 +59,7 @@ export default class UIHandler {
         }
       }
       else {
-        scene.playerDeckArea.card.destroy();
+        if (scene.playerDeckArea.card) scene.playerDeckArea.card.destroy();
         scene.playerDeckArea.card = scene.CardsHandler.dealCardBack().render(1000, 860);
       }
     };
@@ -72,7 +72,7 @@ export default class UIHandler {
         }
       }
       else {
-        scene.opponentDeckArea.card.destroy();
+        if (scene.opponentDeckArea.card) scene.opponentDeckArea.card.destroy();
         scene.opponentDeckArea.card = scene.CardsHandler.dealCardBack().render(1000, 135);
       }
     };

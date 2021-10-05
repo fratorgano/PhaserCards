@@ -54,6 +54,19 @@ function updateMembers(game, spectators) {
   }
 }
 
+function resetGame(game, spectators) {
+  // resetting game
+  // setting all players and spectators to initializing state
+  for (const players of game.players) {
+    io.to(players.id).emit('changeGameState', 'initializing');
+  }
+  for (const spectator of spectators) {
+    io.to(spectator.id).emit('changeGameState', 'initializing');
+  }
+  // resetting game
+  game.reset();
+}
+
 io.on('connection', (socket) => {
   console.log('user connected:', socket.id);
 
@@ -127,6 +140,9 @@ io.on('connection', (socket) => {
 
     if (room.game.isGameOver()) {
       io.emit('gameOver', room.game.calculateScores());
+      resetGame(room.game, room.spectators);
+      room.game.start();
+      updateMembers(room.game, room.spectators);
     }
   });
 
@@ -139,6 +155,9 @@ io.on('connection', (socket) => {
     updateMembers(room.game, room.spectators);
     if (room.game.isGameOver()) {
       io.emit('gameOver', room.game.calculateScores());
+      resetGame(room.game, room.spectators);
+      room.game.start();
+      updateMembers(room.game, room.spectators);
     }
   });
 
@@ -147,8 +166,11 @@ io.on('connection', (socket) => {
     const room = rooms.find((r) => r.name === roomNameSocket);
     if (room) {
       room.game.removePlayer(socket.id);
+      room.spectators = room.spectators.filter((spectator) => spectator.id !== socket.id);
+
       if (!room.game.isReady()) {
-        // resetting game if there are not enough players
+        resetGame(room.game, room.spectators);
+        /* // resetting game if there are not enough players
         for (const players of room.game.players) {
           // newGame.addPlayer(players.id);
           io.to(players.id).emit('changeGameState', 'initializing');
@@ -157,9 +179,8 @@ io.on('connection', (socket) => {
           io.to(spectator.id).emit('changeGameState', 'initializing');
         }
         console.log('game reset');
-        room.game.reset();
+        room.game.reset(); */
       }
-      room.spectators = room.spectators.filter((spectator) => spectator.id !== socket.id);
 
       // removing the empty room from the rooms list if necessary
       if (room.game.players.length === 0) {
