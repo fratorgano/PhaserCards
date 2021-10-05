@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/login.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <title>PhaserCards - Home</title>
+  </head>
+
+  <body>
+    <div class="centered">
+      <h1>Scopa</h1>
+      <h2>Create a new room</h2>
+      <form method="get" id="form" action="/game">
+        <h3>Choose a Username</h3>
+        <input
+          type="text"
+          name="userName"
+          id="userName"
+          minlength="3"
+          placeholder="Username"
+          autocomplete="off"
+          required
+        />
+        <br />
+        <h3>Choose a Room Name, if you want to create a new one</h3>
+        <input
+          type="text"
+          name="roomName"
+          id="roomName"
+          minlength="3"
+          required
+          autocomplete="off"
+          placeholder="Room Name"
+        />
+        <button id="createRoomButton">
+          Create room
+        </button>
+      </form>
+      <h2>Or join one that already exists</h2>
+      <table id="roomTable" class="centered-table">
+        <tr>
+          <th>Room name</th>
+          <th>Player0</th>
+          <th>Player1</th>
+          <th>Spectators</th>
+          <th></th>
+        </tr>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <footer class="footer">
+      Open source project available on
+      <b
+        ><a href="https://github.com/fratorgano/SocketChess" target="_blank"
+          >GitHub</a
+        ></b
+      >
+      <br />
+      Made by
+      <b
+        ><a href="https://fratorgano.me" target="_blank"
+          >Francesco Torgano</a
+        ></b
+      >
+      © 2021
+    </footer>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/login.js"></script>
+</html>
