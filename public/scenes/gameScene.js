@@ -43,6 +43,7 @@ export default class Game extends Phaser.Scene {
     this.UIHandler.buildUI();
 
     this.InteractivityHandler = new InteractivityHandler(this);
+    this.cameras.main.setBackgroundColor('rgba(28, 28, 30, 1)');
   }
 
   update() {

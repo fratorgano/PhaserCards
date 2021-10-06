@@ -1,9 +1,16 @@
 body {
-  background-color: black;
+  background-color: #1c1c1e;
   margin: 0;
 }
 
 canvas {
   display : block;   
   margin : auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1c1c1e;
+    color: white;
+  }
 }
