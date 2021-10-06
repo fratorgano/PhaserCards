@@ -4,7 +4,7 @@
 export default class SocketHandler {
   constructor(scene, roomName, playerName) {
     this.scene = scene;
-    this.socket = io('http://localhost:3001');
+    this.socket = io();
     this.roomName = roomName;
     this.playerName = playerName;
 

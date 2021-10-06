@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
       name: name,
       players: [],
       spectators: [],
-      game: new Scopa(cards.splice(0, 16)),
+      game: new Scopa(cards),
     });
   });
 
