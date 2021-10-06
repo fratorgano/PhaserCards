@@ -130,7 +130,7 @@ io.on('connection', (socket) => {
     io.emit('room_list', rooms);
   });
 
-  socket.on('cardPlayed', (cardName) => {
+  socket.on('play', (cardName) => {
     console.log(`${roomNameSocket}: cardPlayed -> ${JSON.stringify(cardName)}`);
     const room = rooms.find((r) => r.name === roomNameSocket);
 
@@ -150,15 +150,19 @@ io.on('connection', (socket) => {
     console.log(`${roomNameSocket}: take -> {${JSON.stringify(card)}, ${JSON.stringify(taken)}}`);
     const room = rooms.find((r) => r.name === roomNameSocket);
 
+    io.to(room.name).emit('take', card, taken);
+
     room.game.take(card, taken);
-    // update members
-    updateMembers(room.game, room.spectators);
-    if (room.game.isGameOver()) {
-      io.emit('gameOver', room.game.calculateScores());
-      resetGame(room.game, room.spectators);
-      room.game.start();
+    setTimeout(() => {
+      // update members
       updateMembers(room.game, room.spectators);
-    }
+      if (room.game.isGameOver()) {
+        io.emit('gameOver', room.game.calculateScores());
+        resetGame(room.game, room.spectators);
+        room.game.start();
+        updateMembers(room.game, room.spectators);
+      }
+    }, 1000);
   });
 
   socket.on('disconnect', () => {
@@ -169,17 +173,8 @@ io.on('connection', (socket) => {
       room.spectators = room.spectators.filter((spectator) => spectator.id !== socket.id);
 
       if (!room.game.isReady()) {
+        // resetting game if there are not enough players
         resetGame(room.game, room.spectators);
-        /* // resetting game if there are not enough players
-        for (const players of room.game.players) {
-          // newGame.addPlayer(players.id);
-          io.to(players.id).emit('changeGameState', 'initializing');
-        }
-        for (const spectator of room.spectators) {
-          io.to(spectator.id).emit('changeGameState', 'initializing');
-        }
-        console.log('game reset');
-        room.game.reset(); */
       }
 
       // removing the empty room from the rooms list if necessary

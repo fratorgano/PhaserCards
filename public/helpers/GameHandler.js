@@ -64,6 +64,43 @@ export default class GameHandler {
       }
     };
 
+    this.take = (cardName, selectedCardsNames) => {
+      if (this.myTurn === -1) {
+        console.log('taking as spectator');
+        if (this.turn === 0) {
+          this.playerHand.pop().destroy();
+          this.playerHand.push(
+            scene.UIHandler.fadeOut(
+              scene.UIHandler.addCardPlayerHand(
+                scene.CardsHandler.dealCard(cardName, false, false), this.playerHand.length)));
+        }
+        else {
+          this.opponentHand.pop().destroy();
+          this.opponentHand.push(
+            scene.UIHandler.fadeOut(
+              scene.UIHandler.addCardOpponentHand(
+                scene.CardsHandler.dealCard(cardName, false, false), this.opponentHand.length)));
+        }
+      }
+      else if (this.myTurn === this.turn) {
+        const card = this.playerHand.find((c) => c.rep.name === cardName);
+        scene.UIHandler.fadeOut(card);
+      }
+      else {
+        this.opponentHand.pop().destroy();
+        this.opponentHand.push(
+          scene.UIHandler.fadeOut(
+            scene.UIHandler.addCardOpponentHand(
+              scene.CardsHandler.dealCard(cardName, false, false), this.opponentHand.length)));
+      }
+
+      for (const cardN of selectedCardsNames) {
+        const card = this.dropZone.find((c) => c.rep.name === cardN);
+        // scene.UIHandler.clickedCardTint(card);
+        scene.UIHandler.fadeOut(card);
+      }
+    };
+
     this.addSelected = (card) => {
       if (this.myTurn === this.turn) {
         this.selected.push(card);
@@ -93,7 +130,6 @@ export default class GameHandler {
       this.turn = turn;
       this.myTurn = myTurn;
 
-      console.log('this.deck:', this.deck);
       scene.UIHandler.updateDeckRemaining(this.deck);
       scene.UIHandler.updateTurn(this.turn, this.myTurn);
 

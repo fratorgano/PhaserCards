@@ -92,6 +92,18 @@ export default class UIHandler {
     };
 
     this.updateTurn = (turn, myTurn) => {
+      // update turn for spectator
+      if (myTurn === -1) {
+        if (turn === 0) {
+          scene.playerHandArea.setStrokeStyle(4, 0x3cf738);
+          scene.opponentHandArea.setStrokeStyle(4, 0xFFFFFF);
+        }
+        else {
+          scene.playerHandArea.setStrokeStyle(4, 0xFFFFFF);
+          scene.opponentHandArea.setStrokeStyle(4, 0x3cf738);
+        }
+        return;
+      }
       if (turn === myTurn) {
         scene.playerHandArea.setStrokeStyle(4, 0x3cf738);
         scene.opponentHandArea.setStrokeStyle(4, 0xFFFFFF);
@@ -104,13 +116,35 @@ export default class UIHandler {
 
     this.dragStartTint = (card) => {
       card.setTint(0xef6060);
+      return card;
     };
     this.clickedCardTint = (card) => {
       card.setTint(0x6060ee);
+      return card;
     };
     this.takeCardTint = (card) => {
       card.setTint(0x60ee60);
+      return card;
     };
 
+    this.fadeIn = (card) => {
+      console.log(card);
+      card.setAlpha(0);
+      scene.tweens.add({
+        targets: card,
+        alpha: 0,
+        duration: 1000,
+      }, this);
+      return card;
+    };
+
+    this.fadeOut = (card) => {
+      scene.tweens.add({
+        targets: card,
+        alpha: 0,
+        duration: 1000,
+      }, this);
+      return card;
+    };
   }
 }

@@ -16,6 +16,11 @@ export default class SocketHandler {
       scene.GameHandler.myTurn = number;
     });
 
+    this.socket.on('take', (card, taken) => {
+      console.log('take', card, taken);
+      scene.GameHandler.take(card, taken);
+    });
+
     this.socket.on('changeGameState', (gameState) => {
       scene.GameHandler.changeGameState(gameState);
       if (gameState === 'initializing') {
@@ -35,7 +40,7 @@ export default class SocketHandler {
 
   }
   playCard(card) {
-    this.socket.emit('cardPlayed', card);
+    this.socket.emit('play', card);
   }
 
   take(card, taken) {
