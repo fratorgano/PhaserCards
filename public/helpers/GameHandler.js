@@ -73,10 +73,6 @@ export default class GameHandler {
         }
       }
 
-      this.moveType = () => {
-        return this.movesData.type;
-      };
-
 
       /* const selectedSum = this.selected.reduce((acc, cur) => acc + cur.rep.number, 0);
       for (const handCard of this.playerHand) {
@@ -91,6 +87,10 @@ export default class GameHandler {
           });
         }
       } */
+    };
+
+    this.moveType = () => {
+      return this.movesData.type;
     };
 
     this.take = (cardName, selectedCardsNames) => {
