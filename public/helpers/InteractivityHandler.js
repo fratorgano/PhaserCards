@@ -20,7 +20,7 @@ export default class InteractivityHandler {
     });
 
     scene.input.on('drop', (_pointer, card) => {
-      if (scene.GameHandler.isMyTurn() && scene.GameHandler.gameState === 'ready') {
+      if (scene.GameHandler.isMyTurn() && scene.GameHandler.gameState === 'ready' && scene.GameHandler.moveType() === 'plays') {
         scene.SocketHandler.playCard(card.rep.name);
       }
       else {

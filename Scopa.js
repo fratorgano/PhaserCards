@@ -46,6 +46,69 @@ class Scopa {
     return cardsToDeal;
   }
 
+  moves(player) {
+    if (player != this.turn) {
+      return [];
+    }
+    // find possible take moves
+    const directTakes = [];
+    const takes = [];
+    const moves = [];
+
+    for (const card of this.players[player].hand) {
+      // find value of card in hand
+      const cardValue = this.convertCardTextToCard(card);
+      // check if that card allows to take a card directly
+      const possibleDirectTakes = this.dropZone.filter(c => this.convertCardTextToCard(c).number === cardValue.number);
+      if (possibleDirectTakes.length > 0) {
+        for (const take of possibleDirectTakes) {
+          const move = { take: card, takes: [take] };
+          directTakes.push(move);
+        }
+      }
+      const possibleTakes = this.dropZone.filter(c => this.convertCardTextToCard(c).number < cardValue.number);
+      if (possibleTakes.length > 0) {
+        const possibleTakesValues = possibleTakes.map(c => this.convertCardTextToCard(c));
+        for (const subsets of this.getAllSubsetsThatSumUpTo(possibleTakesValues, cardValue.number)) {
+          takes.push({ take: card, takes: subsets });
+        }
+      }
+      moves.push({ play:card });
+    }
+
+    if (directTakes.length > 0) {
+      console.log('direct takes:', directTakes);
+      return { type:'directTakes', moves:directTakes };
+    }
+    else if (takes.length > 0) {
+      console.log('takes:', takes);
+      return { type:'takes', moves:takes };
+    }
+    else {
+      console.log('moves:', moves);
+      return { type:'plays', moves:moves };
+    }
+  }
+
+  // find subset of cards that sum up to value
+  // needs a better implementations
+  getAllSubsetsThatSumUpTo(array, sum) {
+    const subsets = [];
+    const subsetsHelper = (arr, index, s, current) => {
+      if (s === 0) {
+        subsets.push(current);
+        return;
+      }
+      for (let i = index; i < arr.length; i++) {
+        if (s - arr[i].number >= 0) {
+          subsetsHelper(arr, i + 1, s - arr[i].number, current.concat(arr[i].name));
+        }
+      }
+    };
+    subsetsHelper(array, 0, sum, []);
+    return subsets;
+  }
+
   start() {
     this.dealCardsToPlayers();
     this.dropZone = this.dealCards(4);
@@ -167,6 +230,7 @@ class Scopa {
 
   convertCardTextToCard(cardText) {
     const card = {
+      name: cardText,
       number: parseInt(cardText.split('-').pop()),
       value: this.convertCardNumberToValue(parseInt(cardText.split('-').pop())),
       suit: cardText.substring(cardText.indexOf('-') + 1, cardText.lastIndexOf('-')),
@@ -194,6 +258,7 @@ class Scopa {
         dropZone: this.dropZone,
         turn: this.turn,
         myTurn: 0,
+        moves: this.moves(0),
       };
     }
   }
@@ -209,6 +274,7 @@ class Scopa {
         dropZone: this.dropZone,
         turn: this.turn,
         myTurn: 1,
+        moves: this.moves(1),
       };
     }
   }
@@ -223,6 +289,7 @@ class Scopa {
       dropZone: this.dropZone,
       turn: this.turn,
       myTurn: -1,
+      moves: [],
     };
   }
 }

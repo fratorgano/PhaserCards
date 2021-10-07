@@ -16,6 +16,8 @@ export default class GameHandler {
 
     this.selected = [];
 
+    this.movesData = [];
+
     this.changeTurn = () => {
       this.turn = (this.turn + 1) % 2;
       console.log('Turn changed to:', this.turn);
@@ -49,7 +51,34 @@ export default class GameHandler {
     };
 
     this.selectedHelper = () => {
-      const selectedSum = this.selected.reduce((acc, cur) => acc + cur.rep.number, 0);
+      console.log(this.movesData);
+      const selectedCardsNames = this.selected.map((c) => c.rep.name);
+      for (const handCard of this.playerHand) {
+        handCard.off('pointerdown');
+        handCard.clearTint();
+      }
+      if (this.movesData.type === 'plays') {
+        return;
+      }
+      for (const move of this.movesData.moves) {
+        // console.log(move.takes, selectedCardsNames);
+        if (move.takes.length === selectedCardsNames.length &&
+          move.takes.every((t) => selectedCardsNames.includes(t))) {
+          const handCard = this.playerHand.find((c) => c.rep.name === move.take);
+          scene.UIHandler.takeCardTint(handCard);
+          handCard.on('pointerdown', () => {
+            this.selected.length = 0;
+            scene.SocketHandler.take(handCard.rep.name, selectedCardsNames);
+          });
+        }
+      }
+
+      this.moveType = () => {
+        return this.movesData.type;
+      };
+
+
+      /* const selectedSum = this.selected.reduce((acc, cur) => acc + cur.rep.number, 0);
       for (const handCard of this.playerHand) {
         handCard.off('pointerdown');
         handCard.clearTint();
@@ -61,7 +90,7 @@ export default class GameHandler {
             scene.SocketHandler.take(handCard.rep.name, selectedCardsNames);
           });
         }
-      }
+      } */
     };
 
     this.take = (cardName, selectedCardsNames) => {
@@ -123,12 +152,13 @@ export default class GameHandler {
       }
     };
 
-    this.updateGameBoard = ({ deck, playerHand, playerDeck, opponentHand, opponentDeck, dropZone, turn, myTurn }) => {
+    this.updateGameBoard = ({ deck, playerHand, playerDeck, opponentHand, opponentDeck, dropZone, turn, myTurn, moves }) => {
       this.clearBoard();
 
       this.deck = deck;
       this.turn = turn;
       this.myTurn = myTurn;
+      this.movesData = moves;
 
       scene.UIHandler.updateDeckRemaining(this.deck);
       scene.UIHandler.updateTurn(this.turn, this.myTurn);
